@@ -1,0 +1,1 @@
+When you whant to commit a change dont put you in the footer of the commit message.
