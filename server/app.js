@@ -10,6 +10,7 @@ app.use(express.json())
 app.use('/api/ingredients', require('./routes/ingredients'))
 app.use('/api/recipes', require('./routes/recipes'))
 app.use('/api/cook-log', require('./routes/cookLog'))
+app.use('/api/dashboard', require('./routes/dashboard'))
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'public')))
