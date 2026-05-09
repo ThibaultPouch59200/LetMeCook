@@ -8,6 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/api/ingredients', require('./routes/ingredients'))
+app.use('/api/recipes', require('./routes/recipes'))
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'public')))
