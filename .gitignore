@@ -1,6 +1,8 @@
+server/letmecook.db
+server/letmecook.db-shm
+server/letmecook.db-wal
 node_modules/
 server/node_modules/
 client/node_modules/
 server/public/
-*.db
-*.sqlite
+.superpowers/
