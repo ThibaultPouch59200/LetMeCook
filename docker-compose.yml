@@ -8,4 +8,5 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      SITE_PASSWORD: ${SITE_PASSWORD:-demo123}
     restart: unless-stopped

@@ -4,12 +4,17 @@ async function request(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
     method,
     headers: body ? { 'Content-Type': 'application/json' } : {},
-    body: body ? JSON.stringify(body) : undefined
+    body: body ? JSON.stringify(body) : undefined,
+    credentials: 'include'
   })
   if (res.status === 204) return null
   const data = await res.json()
   if (!res.ok) throw new Error(data.error || 'Request failed')
   return data
+}
+
+export async function apiCall(path, method = 'GET', body) {
+  return request(method, path, body)
 }
 
 export const api = {

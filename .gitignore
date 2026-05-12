@@ -6,3 +6,4 @@ server/node_modules/
 client/node_modules/
 server/public/
 .superpowers/
+.env
