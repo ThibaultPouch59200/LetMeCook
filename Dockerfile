@@ -15,7 +15,7 @@ COPY client/ client/
 RUN cd client && npm run build
 
 COPY server/package.json server/package-lock.json server/
-RUN cd server && npm ci --omit=dev
+RUN cd server && npm install
 
 COPY server/ server/
 
