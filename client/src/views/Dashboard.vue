@@ -417,4 +417,5 @@ function countdownClass(dateStr) {
   0%, 100% { opacity: 0.8; }
   50%       { opacity: 0.25; }
 }
+
 </style>

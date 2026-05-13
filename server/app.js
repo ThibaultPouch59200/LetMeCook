@@ -35,6 +35,10 @@ app.use('/api/cook-log', checkAuth, require('./routes/cookLog'))
 app.use('/api/dashboard', checkAuth, require('./routes/dashboard'))
 
 if (process.env.NODE_ENV === 'production') {
+  app.get('/sw.js', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+    next()
+  })
   app.use(express.static(path.join(__dirname, 'public')))
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'))
