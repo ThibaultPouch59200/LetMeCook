@@ -29,7 +29,7 @@ export default {
 
     const checkAuth = async () => {
       try {
-        const response = await apiCall('/api/auth/status')
+        const response = await apiCall('/auth/status')
         authenticated.value = response.authenticated
       } catch (err) {
         authenticated.value = false
@@ -42,7 +42,7 @@ export default {
 
     const logout = async () => {
       try {
-        await apiCall('/api/auth/logout', 'POST')
+        await apiCall('/auth/logout', 'POST')
         authenticated.value = false
       } catch (err) {
         console.error('Logout failed:', err)

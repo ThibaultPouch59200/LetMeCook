@@ -35,7 +35,7 @@ export default {
       loading.value = true
 
       try {
-        const response = await apiCall('/api/auth/login', 'POST', { password: password.value })
+        const response = await apiCall('/auth/login', 'POST', { password: password.value })
         emit('authenticated')
       } catch (err) {
         error.value = err.message || 'Invalid password'
