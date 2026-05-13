@@ -46,4 +46,9 @@ async function confirmDelete(entry) {
 .header-row { background: var(--panel-alt); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); cursor: default !important; }
 .recipe-link { color: var(--text-bright); text-decoration: none; font-weight: 600; }
 .recipe-link:hover { color: var(--accent); }
+
+@media (max-width: 767px) {
+  .header-row { display: none; }
+  .trow { min-height: 44px; flex-wrap: wrap; gap: 4px; }
+}
 </style>

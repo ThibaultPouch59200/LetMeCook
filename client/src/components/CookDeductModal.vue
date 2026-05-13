@@ -72,4 +72,11 @@ async function confirm() {
 .use-all:hover { background: #2e2e2e; color: var(--text); border-color: var(--border); }
 .deduct-stock { color: var(--text-faint); font-size: 0.72rem; }
 .modal-footer { padding: 10px 14px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }
+
+@media (max-width: 767px) {
+  .modal { width: calc(100vw - 16px); max-height: 88vh; }
+  .deduct-controls { flex-wrap: wrap; gap: 6px; }
+  .qty-input { width: 80px; }
+  .use-all { margin-left: 0; }
+}
 </style>

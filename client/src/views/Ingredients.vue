@@ -6,24 +6,24 @@
     </div>
     <div class="panel ing-list">
       <div class="trow header-row">
-        <div style="flex:2">Name</div>
-        <div style="flex:1">Quantity</div>
-        <div style="flex:1">Category</div>
-        <div style="flex:1">Expires</div>
-        <div style="flex:0 0 80px">Actions</div>
+        <div class="col-name" style="flex:2">Name</div>
+        <div class="col-qty" style="flex:1">Quantity</div>
+        <div class="col-cat" style="flex:1">Category</div>
+        <div class="col-exp" style="flex:1">Expires</div>
+        <div class="col-actions" style="flex:0 0 80px">Actions</div>
       </div>
       <div class="trow" v-for="ing in ingredients" :key="ing.id" style="cursor:default">
-        <div style="flex:2"><span class="trow-name">{{ ing.name }}</span></div>
-        <div style="flex:1">{{ ing.quantity }} {{ ing.unit }}</div>
-        <div style="flex:1">
+        <div class="col-name" style="flex:2"><span class="trow-name">{{ ing.name }}</span></div>
+        <div class="col-qty" style="flex:1">{{ ing.quantity }} {{ ing.unit }}</div>
+        <div class="col-cat" style="flex:1">
           <span class="badge badge-grey" v-if="ing.category">{{ ing.category }}</span>
           <span v-else style="color:var(--text-faint)">—</span>
         </div>
-        <div style="flex:1">
+        <div class="col-exp" style="flex:1">
           <span v-if="ing.expiration_date" class="badge" :class="expiryBadge(ing.expiration_date)">{{ ing.expiration_date }}</span>
           <span v-else style="color:var(--text-faint)">—</span>
         </div>
-        <div style="flex:0 0 80px;display:flex;gap:4px">
+        <div class="col-actions" style="flex:0 0 80px;display:flex;gap:4px">
           <button class="btn btn-sm" @click="openEdit(ing)">✎</button>
           <button class="btn btn-sm btn-danger" @click="confirmDelete(ing)">✕</button>
         </div>
@@ -132,4 +132,13 @@ function expiryBadge(dateStr) {
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .modal-footer { padding: 10px 16px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }
 .error { color: var(--red); font-size: 0.82rem; }
+
+@media (max-width: 767px) {
+  .header-row { display: none; }
+  .col-cat, .col-exp { display: none !important; }
+  .col-actions { flex: 0 0 72px !important; }
+  .trow { min-height: 44px; }
+  .modal { width: calc(100vw - 16px) !important; }
+  .two-col { grid-template-columns: 1fr 1fr; }
+}
 </style>

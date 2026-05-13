@@ -216,4 +216,35 @@ async function saveEdit() {
 .step-edit-row { display: flex; gap: 6px; align-items: center; margin-bottom: 5px; }
 .substep-edit-list { display: flex; flex-direction: column; gap: 4px; }
 .substep-edit-row { display: flex; gap: 4px; align-items: center; }
+
+@media (max-width: 767px) {
+  .detail-layout {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 6px;
+    gap: 6px;
+  }
+  .left-panel {
+    width: 100% !important;
+    flex-shrink: 0;
+    overflow: visible;
+    height: auto;
+  }
+  .panel-scroll { overflow: visible; flex: none; height: auto; }
+  .photo-area { height: 80px; }
+  .right-panel {
+    flex: none;
+    height: auto;
+    overflow: visible;
+    min-height: 200px;
+  }
+  .right-panel > div { overflow: visible; height: auto; }
+
+  .modal, .large-modal { width: calc(100vw - 16px) !important; max-height: 90vh; }
+  .three-col { grid-template-columns: 1fr !important; }
+  .ing-edit-row { flex-wrap: wrap; }
+  .ing-edit-row select { flex: 1 1 100% !important; }
+}
 </style>

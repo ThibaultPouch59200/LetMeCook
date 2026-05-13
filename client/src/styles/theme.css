@@ -58,6 +58,12 @@ body {
   font-family: inherit; font-size: 0.88rem; padding: 0 16px;
   cursor: pointer; height: 32px;
   display: inline-flex; align-items: center; gap: 5px;
+  touch-action: manipulation;
+}
+
+@media (max-width: 767px) {
+  .btn { min-height: 40px; }
+  .btn-sm { min-height: 36px; font-size: 0.85rem; }
 }
 .btn:hover { background: #303030; color: var(--text); border-color: var(--border); }
 .btn-sm { font-size: 0.82rem; padding: 0 12px; height: 28px; }

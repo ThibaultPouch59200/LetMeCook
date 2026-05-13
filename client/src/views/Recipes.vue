@@ -6,20 +6,20 @@
     </div>
     <div class="panel recipe-list">
       <div class="trow header-row">
-        <div style="flex:3">Name</div>
-        <div style="flex:1">Prep</div>
-        <div style="flex:1">Cook</div>
-        <div style="flex:1">Servings</div>
-        <div style="flex:1">Status</div>
-        <div style="flex:0 0 60px"></div>
+        <div class="col-name" style="flex:3">Name</div>
+        <div class="col-prep" style="flex:1">Prep</div>
+        <div class="col-cook" style="flex:1">Cook</div>
+        <div class="col-srv" style="flex:1">Servings</div>
+        <div class="col-status" style="flex:1">Status</div>
+        <div class="col-del" style="flex:0 0 60px"></div>
       </div>
       <router-link v-for="r in recipes" :key="r.id" :to="`/recipes/${r.id}`" class="trow recipe-row">
-        <div style="flex:3"><span class="trow-name">{{ r.name }}</span></div>
-        <div style="flex:1">{{ r.prep_time ? r.prep_time + ' min' : '—' }}</div>
-        <div style="flex:1">{{ r.cook_time ? r.cook_time + ' min' : '—' }}</div>
-        <div style="flex:1">{{ r.servings || '—' }}</div>
-        <div style="flex:1"><StockBadge :canCook="r.canCook" :missingCount="r.missingCount" /></div>
-        <div style="flex:0 0 60px" @click.prevent="confirmDelete(r)">
+        <div class="col-name" style="flex:3"><span class="trow-name">{{ r.name }}</span></div>
+        <div class="col-prep" style="flex:1">{{ r.prep_time ? r.prep_time + ' min' : '—' }}</div>
+        <div class="col-cook" style="flex:1">{{ r.cook_time ? r.cook_time + ' min' : '—' }}</div>
+        <div class="col-srv" style="flex:1">{{ r.servings || '—' }}</div>
+        <div class="col-status" style="flex:1"><StockBadge :canCook="r.canCook" :missingCount="r.missingCount" /></div>
+        <div class="col-del" style="flex:0 0 60px" @click.prevent="confirmDelete(r)">
           <button class="btn btn-sm btn-danger">✕</button>
         </div>
       </router-link>
@@ -91,4 +91,13 @@ async function confirmDelete(r) {
 .hint { color: var(--text-faint); font-size: 0.78rem; }
 .modal-footer { padding: 10px 16px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; }
 .error { color: var(--red); font-size: 0.82rem; }
+
+@media (max-width: 767px) {
+  .header-row { display: none; }
+  .col-prep, .col-cook, .col-srv { display: none !important; }
+  .col-name { flex: 1 !important; }
+  .col-del { flex: 0 0 52px !important; }
+  .trow { min-height: 44px; }
+  .modal { width: calc(100vw - 16px) !important; }
+}
 </style>

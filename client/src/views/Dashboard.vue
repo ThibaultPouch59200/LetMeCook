@@ -377,6 +377,29 @@ function countdownClass(dateStr) {
   letter-spacing: 2px;
 }
 
+/* ── MOBILE ── */
+@media (max-width: 767px) {
+  .hud-header { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px; }
+  .hud-right { text-align: left; }
+  .hud-title { font-size: 0.9rem; letter-spacing: 2px; }
+
+  .stat-row { flex-wrap: wrap; }
+  .stat-block {
+    flex: 1 1 50%;
+    border-right: 1px solid var(--border-dim);
+    border-bottom: 1px solid var(--border-dim);
+    min-width: 0;
+  }
+  .stat-block:nth-child(even) { border-right: none; }
+  .stat-block:nth-last-child(-n+2) { border-bottom: none; }
+  .stat-value { font-size: 1.35rem; }
+
+  .row-2 { grid-template-columns: 1fr; }
+
+  .recipes-grid { grid-template-columns: repeat(2, 1fr); }
+  .rc-name { font-size: 0.78rem; }
+}
+
 /* ── ANIMATIONS ── */
 @keyframes pulse-green {
   0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }

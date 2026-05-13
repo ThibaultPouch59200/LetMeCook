@@ -5,15 +5,33 @@
   <div v-else id="layout">
     <nav class="toolbar">
       <div class="toolbar-logo">LetMeCook</div>
-      <router-link to="/" class="btn btn-sm" :class="{ 'btn-active': $route.path === '/' }">⌂ Dashboard</router-link>
-      <router-link to="/ingredients" class="btn btn-sm" :class="{ 'btn-active': $route.path === '/ingredients' }">⬡ Ingredients</router-link>
-      <router-link to="/recipes" class="btn btn-sm" :class="{ 'btn-active': $route.path.startsWith('/recipes') }">⚙ Recipes</router-link>
-      <router-link to="/cook-log" class="btn btn-sm" :class="{ 'btn-active': $route.path === '/cook-log' }">📋 Cook Log</router-link>
+      <router-link to="/" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/' }">⌂ Dashboard</router-link>
+      <router-link to="/ingredients" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/ingredients' }">⬡ Ingredients</router-link>
+      <router-link to="/recipes" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path.startsWith('/recipes') }">⚙ Recipes</router-link>
+      <router-link to="/cook-log" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/cook-log' }">📋 Cook Log</router-link>
       <button class="btn btn-sm logout-btn" @click="logout">🚪 Logout</button>
     </nav>
     <main class="main-content">
       <router-view />
     </main>
+    <nav class="mobile-nav">
+      <router-link to="/" :class="{ active: $route.path === '/' }">
+        <span class="nav-icon">⌂</span>
+        <span class="nav-label">Dash</span>
+      </router-link>
+      <router-link to="/ingredients" :class="{ active: $route.path === '/ingredients' }">
+        <span class="nav-icon">⬡</span>
+        <span class="nav-label">Ingredients</span>
+      </router-link>
+      <router-link to="/recipes" :class="{ active: $route.path.startsWith('/recipes') }">
+        <span class="nav-icon">⚙</span>
+        <span class="nav-label">Recipes</span>
+      </router-link>
+      <router-link to="/cook-log" :class="{ active: $route.path === '/cook-log' }">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Cook Log</span>
+      </router-link>
+    </nav>
   </div>
 </template>
 
@@ -85,4 +103,45 @@ export default {
   margin-left: auto;
 }
 .main-content { flex: 1; overflow: hidden; }
+
+.mobile-nav { display: none; }
+
+@media (max-width: 767px) {
+  .desktop-nav { display: none !important; }
+  .toolbar-logo { border-right: none; margin-right: 0; }
+
+  #layout { padding-bottom: 56px; }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--header);
+    border-top: 2px solid var(--border-dim);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.6);
+    z-index: 50;
+  }
+  .mobile-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: 0.6rem;
+    gap: 2px;
+    padding: 6px 4px;
+    border-right: 1px solid var(--border-dim);
+    transition: background 0.1s;
+  }
+  .mobile-nav a:last-child { border-right: none; }
+  .mobile-nav a.active {
+    color: var(--accent);
+    background: rgba(224,160,32,0.08);
+  }
+  .mobile-nav .nav-icon { font-size: 1.25rem; line-height: 1; }
+  .mobile-nav .nav-label { text-transform: uppercase; letter-spacing: 0.5px; }
+}
 </style>
