@@ -39,5 +39,10 @@ export const api = {
     list: () => request('GET', '/cook-log'),
     create: (data) => request('POST', '/cook-log', data),
     remove: (id) => request('DELETE', `/cook-log/${id}`)
+  },
+  mealPlan: {
+    getWeek: (weekStart) => request('GET', `/meal-plan?week=${weekStart}`),
+    upsert: (data) => request('PUT', '/meal-plan', data),
+    clear: (data) => request('DELETE', '/meal-plan', data)
   }
 }
