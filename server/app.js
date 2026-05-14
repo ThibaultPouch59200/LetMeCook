@@ -33,6 +33,7 @@ app.use('/api/ingredients', checkAuth, require('./routes/ingredients'))
 app.use('/api/recipes', checkAuth, require('./routes/recipes'))
 app.use('/api/cook-log', checkAuth, require('./routes/cookLog'))
 app.use('/api/dashboard', checkAuth, require('./routes/dashboard'))
+app.use('/api/meal-plan', checkAuth, require('./routes/mealPlan'))
 
 if (process.env.NODE_ENV === 'production') {
   app.get('/sw.js', (req, res, next) => {
