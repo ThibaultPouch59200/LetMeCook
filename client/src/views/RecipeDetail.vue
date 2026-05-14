@@ -106,7 +106,17 @@
                 </div>
               </div>
               <input v-model.number="ing.quantity" type="number" class="input" placeholder="Qty" style="flex:1" />
-              <input v-model="ing.unit" class="input" placeholder="Unit" style="flex:1" />
+              <select v-model="ing.unit" class="input" style="flex:1">
+                <option value="" disabled>Unit</option>
+                <option>g</option>
+                <option>kg</option>
+                <option>ml</option>
+                <option>cl</option>
+                <option>L</option>
+                <option>pcs</option>
+                <option>tbsp</option>
+                <option>tsp</option>
+              </select>
               <button class="btn btn-sm btn-danger" @click="editForm.ingredients.splice(i,1)">✕</button>
             </div>
             <button class="btn btn-sm" @click="editForm.ingredients.push({ ingredientId: '', quantity: '', unit: '', searchText: '' })">+ Add Ingredient</button>
