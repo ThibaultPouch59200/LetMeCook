@@ -9,6 +9,7 @@
       <router-link to="/ingredients" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/ingredients' }">⬡ Ingredients</router-link>
       <router-link to="/recipes" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path.startsWith('/recipes') }">⚙ Recipes</router-link>
       <router-link to="/cook-log" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/cook-log' }">📋 Cook Log</router-link>
+      <router-link to="/meal-plan" class="btn btn-sm desktop-nav" :class="{ 'btn-active': $route.path === '/meal-plan' }">📅 Plan</router-link>
       <button class="btn btn-sm logout-btn" @click="logout">🚪 Logout</button>
     </nav>
     <main class="main-content">
@@ -30,6 +31,10 @@
       <router-link to="/cook-log" :class="{ active: $route.path === '/cook-log' }">
         <span class="nav-icon">📋</span>
         <span class="nav-label">Cook Log</span>
+      </router-link>
+      <router-link to="/meal-plan" :class="{ active: $route.path === '/meal-plan' }">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Plan</span>
       </router-link>
     </nav>
   </div>
