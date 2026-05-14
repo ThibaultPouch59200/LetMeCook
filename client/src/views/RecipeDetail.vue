@@ -78,15 +78,38 @@
           <label>Ingredients</label>
           <div class="ing-edit-list">
             <div class="ing-edit-row" v-for="(ing, i) in editForm.ingredients" :key="i">
-              <select v-model="ing.ingredientId" class="input" style="flex:2">
-                <option value="">— Select —</option>
-                <option v-for="opt in allIngredients" :key="opt.id" :value="opt.id">{{ opt.name }} ({{ opt.unit }})</option>
-              </select>
+              <div class="ing-combo" style="flex:2">
+                <input
+                  v-model="ing.searchText"
+                  class="input"
+                  placeholder="Search ingredient..."
+                  autocomplete="off"
+                  @focus="activeDropdown = i"
+                  @input="activeDropdown = i"
+                  @blur="closeDropdownDelayed"
+                />
+                <div class="ing-dropdown" v-if="activeDropdown === i">
+                  <div
+                    class="ing-option"
+                    v-for="opt in filteredIngs(ing.searchText)"
+                    :key="opt.id"
+                    @mousedown.prevent="selectIng(ing, opt)"
+                  >{{ opt.name }} ({{ opt.unit }})</div>
+                  <div
+                    class="ing-option ing-create"
+                    v-if="ing.searchText.trim() && !exactMatch(ing.searchText)"
+                    @mousedown.prevent="createIng(ing)"
+                  >+ Create "{{ ing.searchText.trim() }}"</div>
+                  <div class="ing-option ing-empty" v-if="!filteredIngs(ing.searchText).length && !ing.searchText.trim()">
+                    Start typing to search
+                  </div>
+                </div>
+              </div>
               <input v-model.number="ing.quantity" type="number" class="input" placeholder="Qty" style="flex:1" />
               <input v-model="ing.unit" class="input" placeholder="Unit" style="flex:1" />
               <button class="btn btn-sm btn-danger" @click="editForm.ingredients.splice(i,1)">✕</button>
             </div>
-            <button class="btn btn-sm" @click="editForm.ingredients.push({ ingredientId: '', quantity: '', unit: '' })">+ Add Ingredient</button>
+            <button class="btn btn-sm" @click="editForm.ingredients.push({ ingredientId: '', quantity: '', unit: '', searchText: '' })">+ Add Ingredient</button>
           </div>
 
           <label>Steps</label>
@@ -135,6 +158,36 @@ const showCook = ref(false)
 const showEdit = ref(false)
 const editForm = ref({})
 const editError = ref('')
+const activeDropdown = ref(null)
+
+function filteredIngs(text) {
+  if (!text || !text.trim()) return allIngredients.value.slice(0, 20)
+  const q = text.toLowerCase()
+  return allIngredients.value.filter(i => i.name.toLowerCase().includes(q))
+}
+
+function exactMatch(text) {
+  const q = text.toLowerCase().trim()
+  return allIngredients.value.some(i => i.name.toLowerCase() === q)
+}
+
+function selectIng(ing, opt) {
+  ing.ingredientId = opt.id
+  ing.searchText = opt.name
+  if (!ing.unit) ing.unit = opt.unit
+  activeDropdown.value = null
+}
+
+function closeDropdownDelayed() {
+  setTimeout(() => { activeDropdown.value = null }, 150)
+}
+
+async function createIng(ing) {
+  const name = ing.searchText.trim()
+  const newIng = await api.ingredients.create({ name, quantity: 0, unit: ing.unit || 'pcs' })
+  allIngredients.value = await api.ingredients.list()
+  selectIng(ing, newIng)
+}
 
 const missingCount = computed(() => recipe.value?.ingredients.filter(i => !i.hasEnough).length ?? 0)
 
@@ -163,7 +216,7 @@ watch(showEdit, (v) => {
     notes: recipe.value.notes || '',
     steps: JSON.parse(JSON.stringify(recipe.value.steps)),
     ingredients: recipe.value.ingredients.map(i => ({
-      ingredientId: i.ingredient_id, quantity: i.quantity, unit: i.unit
+      ingredientId: i.ingredient_id, quantity: i.quantity, unit: i.unit, searchText: i.ingredient_name || ''
     }))
   }
 })
@@ -211,6 +264,12 @@ async function saveEdit() {
 .error { color: var(--red); font-size: 0.82rem; }
 .ing-edit-list { display: flex; flex-direction: column; gap: 5px; }
 .ing-edit-row { display: flex; gap: 5px; align-items: center; }
+.ing-combo { position: relative; }
+.ing-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 200; background: var(--panel); border: 1px solid var(--border-dim); box-shadow: 0 4px 16px rgba(0,0,0,0.6); max-height: 180px; overflow-y: auto; }
+.ing-option { padding: 6px 10px; font-size: 0.85rem; cursor: pointer; color: var(--text); }
+.ing-option:hover { background: var(--panel-alt); }
+.ing-create { color: var(--green); }
+.ing-empty { color: var(--text-faint); cursor: default; }
 .steps-edit-list { display: flex; flex-direction: column; gap: 8px; }
 .step-edit-block { background: #1a1a1a; border: 1px solid var(--border-dim); padding: 8px; }
 .step-edit-row { display: flex; gap: 6px; align-items: center; margin-bottom: 5px; }
