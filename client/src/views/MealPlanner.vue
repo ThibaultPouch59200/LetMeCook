@@ -130,13 +130,13 @@ async function onSelect(recipe) {
 }
 .week-toggle { display: flex; gap: 4px; }
 
-/* Desktop: 7-column grid */
+/* Desktop: 2-column grid */
 .week-container {
   flex: 1;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
   align-items: start;
 }
 .day-cell {
@@ -149,40 +149,44 @@ async function onSelect(recipe) {
 .day-header {
   background: var(--header-mid);
   border-bottom: 1px solid var(--border-dim);
-  padding: 4px 6px;
-  text-align: center;
+  padding: 8px 12px;
+  display: flex; align-items: center; gap: 10px;
 }
 .day-header.today { border-bottom-color: var(--green); }
-.day-name { display: block; color: var(--text-bright); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-.day-date { display: block; color: var(--text-faint); font-size: 0.65rem; }
+.day-name { color: var(--text-bright); font-size: 1rem; font-weight: 700; text-transform: uppercase; }
+.day-date { color: var(--text-faint); font-size: 0.85rem; }
 .day-header.today .day-name { color: var(--green); }
-.day-meals { padding: 5px; display: flex; flex-direction: column; gap: 5px; }
+.day-meals { padding: 10px; display: flex; flex-direction: row; gap: 10px; }
 
-.meal-slot { display: flex; flex-direction: column; gap: 3px; }
-.slot-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-faint); letter-spacing: 0.5px; }
+.meal-slot { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.slot-label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-faint); letter-spacing: 0.5px; font-weight: 600; }
 .slot-empty {
-  width: 100%; padding: 8px 4px; font-size: 0.75rem; font-style: italic;
+  width: 100%; padding: 16px 8px; font-size: 0.9rem; font-style: italic;
   color: var(--text-muted); background: var(--panel-alt);
   border: 1px dashed var(--border-dim); cursor: pointer; border-radius: 2px;
 }
 .slot-empty:hover { border-color: var(--border); color: var(--text); }
 .slot-filled {
   background: var(--panel-alt); border: 1px solid var(--border-dim);
-  border-radius: 2px; padding: 5px;
+  border-radius: 2px; padding: 10px;
 }
-.slot-name { color: var(--green); font-size: 0.78rem; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
-.slot-actions { display: flex; gap: 3px; }
-.slot-actions .btn { font-size: 0.65rem; padding: 2px 6px; }
+.slot-name { color: var(--green); font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+.slot-actions { display: flex; gap: 6px; }
+.slot-actions .btn { font-size: 0.8rem; padding: 4px 10px; }
 
-/* Mobile: vertical day list, side-by-side meals */
+/* Mobile: single-column, compact */
 @media (max-width: 767px) {
   .week-container {
     grid-template-columns: 1fr;
+    gap: 6px;
   }
-  .day-header { text-align: left; display: flex; align-items: center; gap: 8px; padding: 6px 10px; }
-  .day-name { display: inline; }
-  .day-date { display: inline; }
-  .day-meals { flex-direction: row; gap: 6px; }
-  .meal-slot { flex: 1; }
+  .day-header { padding: 6px 10px; }
+  .day-name { font-size: 0.85rem; }
+  .day-date { font-size: 0.75rem; }
+  .day-meals { padding: 6px; gap: 6px; }
+  .slot-label { font-size: 0.7rem; }
+  .slot-empty { padding: 10px 6px; font-size: 0.8rem; }
+  .slot-name { font-size: 0.85rem; }
+  .slot-actions .btn { font-size: 0.72rem; padding: 3px 7px; }
 }
 </style>

@@ -68,6 +68,10 @@ Each domain (ingredients, recipes, cookLog, dashboard) has its own file at each 
 
 The router uses hash history (`createWebHashHistory`), so URLs are `/#/ingredients`, `/#/recipes/:id`, etc.
 
+### Data persistence
+
+All state must be persisted server-side in SQLite. Never use localStorage or any client-side storage for application data.
+
 ### Tests
 
 Tests in `server/__tests__/` use Jest + Supertest against the real SQLite database (not mocked). Each `beforeEach` deletes rows in FK dependency order. Running tests mutates `server/letmecook.db`.
