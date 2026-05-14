@@ -7,3 +7,4 @@ client/node_modules/
 server/public/
 .superpowers/
 .env
+.idea
