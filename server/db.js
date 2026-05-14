@@ -41,4 +41,13 @@ db.prepare(`CREATE TABLE IF NOT EXISTS cook_log (
   cooked_at TEXT NOT NULL
 )`).run()
 
+db.prepare(`CREATE TABLE IF NOT EXISTS meal_plan (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  week_start TEXT    NOT NULL,
+  day        INTEGER NOT NULL,
+  meal_type  TEXT    NOT NULL,
+  recipe_id  INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+  UNIQUE(week_start, day, meal_type)
+)`).run()
+
 module.exports = db
