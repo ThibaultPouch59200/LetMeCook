@@ -59,6 +59,16 @@ Each domain (ingredients, recipes, cookLog, dashboard) has its own file at each 
 
 `client/src/api.js` is the single API client — a thin `fetch` wrapper. All components import from it as `import { api } from '../api'`. Never use raw `fetch` in components.
 
+#### Component discipline
+
+Views in `client/src/views/` must stay thin. Any self-contained piece of UI — a modal, a form, a list row, a reusable display element — goes in `client/src/components/` instead of being inlined in the view. Concretely:
+
+- **Modals** are always their own component (`XxxModal.vue`), never an inline `<div class="overlay">` inside a view.
+- **Repeated UI patterns** (a table row type, a card, a badge variant, a form field widget) are extracted as components once they appear in more than one place.
+- **Complex form sub-sections** (e.g. an ingredient editor list, a step editor list) are components even when used in a single view, if they own non-trivial state or logic.
+
+A view should ideally contain only layout, data-fetching, and wiring between components.
+
 `client/src/styles/theme.css` defines all CSS variables. The design is Factorio-inspired dark grey:
 
 - `--accent: #e0a020` (orange) is used **only** for the active nav tab underline and the step progress bar fill — not as a general highlight color
