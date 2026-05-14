@@ -69,6 +69,9 @@ export default {
 
     onMounted(() => {
       checkAuth()
+      window.addEventListener('session-expired', () => {
+        authenticated.value = false
+      })
     })
 
     return { authenticated, onAuthenticated, logout }

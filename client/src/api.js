@@ -8,6 +8,9 @@ async function request(method, path, body) {
     credentials: 'include'
   })
   if (res.status === 204) return null
+  if (res.status === 401 && path !== '/auth/login' && path !== '/auth/status') {
+    window.dispatchEvent(new CustomEvent('session-expired'))
+  }
   const data = await res.json()
   if (!res.ok) throw new Error(data.error || 'Request failed')
   return data
