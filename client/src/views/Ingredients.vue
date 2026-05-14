@@ -45,7 +45,17 @@
             </div>
             <div>
               <label>Unit *</label>
-              <input v-model="form.unit" class="input" placeholder="g, ml, pieces..." />
+              <select v-model="form.unit" class="input">
+                <option value="" disabled>Select unit</option>
+                <option>g</option>
+                <option>kg</option>
+                <option>ml</option>
+                <option>cl</option>
+                <option>L</option>
+                <option>pcs</option>
+                <option>tbsp</option>
+                <option>tsp</option>
+              </select>
             </div>
           </div>
           <label>Category</label>
