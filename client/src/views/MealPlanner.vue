@@ -152,10 +152,10 @@ async function onSelect(recipe) {
   padding: 4px 6px;
   text-align: center;
 }
-.day-header.today { border-bottom-color: var(--accent); }
+.day-header.today { border-bottom-color: var(--green); }
 .day-name { display: block; color: var(--text-bright); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
 .day-date { display: block; color: var(--text-faint); font-size: 0.65rem; }
-.day-header.today .day-name { color: var(--accent); }
+.day-header.today .day-name { color: var(--green); }
 .day-meals { padding: 5px; display: flex; flex-direction: column; gap: 5px; }
 
 .meal-slot { display: flex; flex-direction: column; gap: 3px; }
