@@ -26,4 +26,8 @@ function remove(weekStart, day, mealType) {
     .run(weekStart, day, mealType)
 }
 
-module.exports = { getWeek, upsert, remove }
+function recipeExists(id) {
+  return !!db.prepare('SELECT id FROM recipes WHERE id = ?').get(id)
+}
+
+module.exports = { getWeek, upsert, remove, recipeExists }

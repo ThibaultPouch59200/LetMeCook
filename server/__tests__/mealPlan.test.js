@@ -88,6 +88,13 @@ describe('PUT /api/meal-plan', () => {
 })
 
 describe('DELETE /api/meal-plan', () => {
+  it('returns 200 when slot does not exist (no-op)', async () => {
+    const res = await request(app).delete('/api/meal-plan').send({
+      weekStart: '2026-05-18', day: 0, mealType: 'lunch'
+    })
+    expect(res.status).toBe(200)
+  })
+
   it('clears a slot', async () => {
     const recipeId = createRecipe()
     db.prepare('INSERT INTO meal_plan (week_start, day, meal_type, recipe_id) VALUES (?, ?, ?, ?)')
