@@ -1,9 +1,8 @@
 <template>
   <div class="page">
-    <div class="panel-title top-bar">
-      <span>Cook Log</span>
+    <PageHeader title="Cook Log">
       <span style="color:var(--text-faint);font-size:0.78rem">{{ entries.length }} entries</span>
-    </div>
+    </PageHeader>
     <div class="panel log-list">
       <div class="trow header-row">
         <div style="flex:3">Recipe</div>
@@ -27,6 +26,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from '../components/PageHeader.vue'
 
 const entries = ref([])
 onMounted(load)
@@ -41,7 +41,6 @@ async function confirmDelete(entry) {
 
 <style scoped>
 .page { display: flex; flex-direction: column; height: 100%; padding: 10px; }
-.top-bar { background: var(--header-mid); border: 1px solid var(--border-dim); border-bottom: none; box-shadow: var(--bevel-hi), var(--bevel-lo); }
 .log-list { flex: 1; overflow-y: auto; }
 .header-row { background: var(--panel-alt); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); cursor: default !important; }
 .recipe-link { color: var(--text-bright); text-decoration: none; font-weight: 600; }
