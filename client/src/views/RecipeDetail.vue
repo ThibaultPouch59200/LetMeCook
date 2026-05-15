@@ -22,12 +22,7 @@
             <span>Serves: <b>{{ recipe.servings || '—' }}</b></span>
           </div>
         </div>
-        <div class="stock-bar" :class="recipe.canCook ? 'ok' : 'missing'">
-          <span :style="{ color: recipe.canCook ? 'var(--green)' : 'var(--red)', fontWeight: 600, fontSize: '0.82rem' }">
-            {{ recipe.canCook ? '✔ All ingredients in stock' : `✘ Missing ${missingCount} ingredient(s)` }}
-          </span>
-          <button class="btn btn-sm btn-green" @click="showCook = true" v-if="recipe.canCook">🍳 Log Cook</button>
-        </div>
+        <RecipeStockBar :canCook="recipe.canCook" :missingCount="missingCount" @cook-clicked="showCook = true" />
         <div class="section-label">Ingredients</div>
         <div class="trow" v-for="ing in recipe.ingredients" :key="ing.id">
           <div>
@@ -59,152 +54,28 @@
     </div>
 
     <CookDeductModal v-if="showCook" :recipe="recipe" @close="showCook = false" @logged="onLogged" />
-
-    <!-- EDIT MODAL -->
-    <div class="overlay" v-if="showEdit" @click.self="showEdit = false">
-      <div class="modal large-modal">
-        <div class="panel-title">Edit Recipe: {{ recipe.name }}</div>
-        <div class="modal-body">
-          <label>Name *</label>
-          <input v-model="editForm.name" class="input" />
-          <div class="three-col">
-            <div><label>Prep (min)</label><input v-model.number="editForm.prep_time" type="number" class="input" /></div>
-            <div><label>Cook (min)</label><input v-model.number="editForm.cook_time" type="number" class="input" /></div>
-            <div><label>Servings</label><input v-model.number="editForm.servings" type="number" class="input" /></div>
-          </div>
-          <label>Notes</label>
-          <textarea v-model="editForm.notes" class="input textarea" rows="2"></textarea>
-
-          <label>Ingredients</label>
-          <div class="ing-edit-list">
-            <div class="ing-edit-row" v-for="(ing, i) in editForm.ingredients" :key="i">
-              <div class="ing-combo" style="flex:2">
-                <input
-                  v-model="ing.searchText"
-                  class="input"
-                  placeholder="Search ingredient..."
-                  autocomplete="off"
-                  @focus="activeDropdown = i"
-                  @input="activeDropdown = i"
-                  @blur="closeDropdownDelayed"
-                />
-                <div class="ing-dropdown" v-if="activeDropdown === i">
-                  <div
-                    class="ing-option"
-                    v-for="opt in filteredIngs(ing.searchText)"
-                    :key="opt.id"
-                    @mousedown.prevent="selectIng(ing, opt)"
-                  >{{ opt.name }} ({{ opt.unit }})</div>
-                  <div
-                    class="ing-option ing-create"
-                    v-if="ing.searchText.trim() && !exactMatch(ing.searchText)"
-                    @mousedown.prevent="createIng(ing)"
-                  >+ Create "{{ ing.searchText.trim() }}"</div>
-                  <div class="ing-option ing-empty" v-if="!filteredIngs(ing.searchText).length && !ing.searchText.trim()">
-                    Start typing to search
-                  </div>
-                </div>
-              </div>
-              <input v-model.number="ing.quantity" type="number" class="input" placeholder="Qty" style="flex:1" />
-              <select v-model="ing.unit" class="input" style="flex:1">
-                <option value="" disabled>Unit</option>
-                <option>g</option>
-                <option>kg</option>
-                <option>ml</option>
-                <option>cl</option>
-                <option>L</option>
-                <option>pcs</option>
-                <option>tbsp</option>
-                <option>tsp</option>
-              </select>
-              <button class="btn btn-sm btn-danger" @click="editForm.ingredients.splice(i,1)">✕</button>
-            </div>
-            <button class="btn btn-sm" @click="editForm.ingredients.push({ ingredientId: '', quantity: '', unit: '', searchText: '' })">+ Add Ingredient</button>
-          </div>
-
-          <label>Steps</label>
-          <div class="steps-edit-list">
-            <div class="step-edit-block" v-for="(step, si) in editForm.steps" :key="si">
-              <div class="step-edit-row">
-                <span style="color:var(--text-dim);font-size:0.82rem;min-width:22px">{{ si + 1 }}.</span>
-                <input v-model="step.text" class="input" placeholder="Step description" style="flex:1" />
-                <button class="btn btn-sm btn-danger" @click="editForm.steps.splice(si,1)">✕</button>
-              </div>
-              <div class="substep-edit-list">
-                <div class="substep-edit-row" v-for="(sub, subi) in step.substeps" :key="subi">
-                  <span style="color:var(--text-faint);padding:0 8px;font-size:0.82rem">↳</span>
-                  <input v-model="step.substeps[subi]" class="input" placeholder="Sub-step" style="flex:1" />
-                  <button class="btn btn-sm btn-danger" @click="step.substeps.splice(subi,1)">✕</button>
-                </div>
-                <button class="btn btn-sm" style="margin-left:28px;margin-top:4px" @click="step.substeps.push('')">+ Sub-step</button>
-              </div>
-            </div>
-            <button class="btn btn-sm" @click="editForm.steps.push({ text: '', substeps: [] })">+ Add Step</button>
-          </div>
-
-          <div class="error" v-if="editError">{{ editError }}</div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn" @click="showEdit = false">Cancel</button>
-          <button class="btn btn-green" @click="saveEdit">Save</button>
-        </div>
-      </div>
-    </div>
+    <RecipeEditModal v-if="showEdit" :recipe="recipe" @close="showEdit = false" @saved="onSaved" />
   </div>
   <div v-else style="padding:2rem;color:var(--text-muted)">Loading...</div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '../api'
 import StepList from '../components/StepList.vue'
 import CookDeductModal from '../components/CookDeductModal.vue'
+import RecipeStockBar from '../components/RecipeStockBar.vue'
+import RecipeEditModal from '../components/RecipeEditModal.vue'
 
 const route = useRoute()
 const recipe = ref(null)
-const allIngredients = ref([])
 const showCook = ref(false)
 const showEdit = ref(false)
-const editForm = ref({})
-const editError = ref('')
-const activeDropdown = ref(null)
-
-function filteredIngs(text) {
-  if (!text || !text.trim()) return allIngredients.value.slice(0, 20)
-  const q = text.toLowerCase()
-  return allIngredients.value.filter(i => i.name.toLowerCase().includes(q))
-}
-
-function exactMatch(text) {
-  const q = text.toLowerCase().trim()
-  return allIngredients.value.some(i => i.name.toLowerCase() === q)
-}
-
-function selectIng(ing, opt) {
-  ing.ingredientId = opt.id
-  ing.searchText = opt.name
-  if (!ing.unit) ing.unit = opt.unit
-  activeDropdown.value = null
-}
-
-function closeDropdownDelayed() {
-  setTimeout(() => { activeDropdown.value = null }, 150)
-}
-
-async function createIng(ing) {
-  const name = ing.searchText.trim()
-  const newIng = await api.ingredients.create({ name, quantity: 0, unit: ing.unit || 'pcs' })
-  allIngredients.value = await api.ingredients.list()
-  selectIng(ing, newIng)
-}
 
 const missingCount = computed(() => recipe.value?.ingredients.filter(i => !i.hasEnough).length ?? 0)
 
-onMounted(async () => {
-  await load()
-  allIngredients.value = await api.ingredients.list()
-})
+onMounted(load)
 
 async function load() {
   recipe.value = await api.recipes.get(Number(route.params.id))
@@ -215,33 +86,9 @@ async function onLogged() {
   await load()
 }
 
-watch(showEdit, (v) => {
-  if (!v) return
-  editError.value = ''
-  editForm.value = {
-    name: recipe.value.name,
-    prep_time: recipe.value.prep_time,
-    cook_time: recipe.value.cook_time,
-    servings: recipe.value.servings,
-    notes: recipe.value.notes || '',
-    steps: JSON.parse(JSON.stringify(recipe.value.steps)),
-    ingredients: recipe.value.ingredients.map(i => ({
-      ingredientId: i.ingredient_id, quantity: i.quantity, unit: i.unit, searchText: i.ingredient_name || ''
-    }))
-  }
-})
-
-async function saveEdit() {
-  editError.value = ''
-  const steps = editForm.value.steps
-    .filter(s => s.text.trim())
-    .map(s => ({ text: s.text, substeps: s.substeps.filter(sub => sub.trim()) }))
-  const ingredients = editForm.value.ingredients.filter(i => i.ingredientId && i.quantity)
-  try {
-    await api.recipes.update(recipe.value.id, { ...editForm.value, steps, ingredients })
-    showEdit.value = false
-    await load()
-  } catch (e) { editError.value = e.message }
+async function onSaved() {
+  showEdit.value = false
+  await load()
 }
 </script>
 
@@ -259,61 +106,13 @@ async function saveEdit() {
 .recipe-name { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin-bottom: 6px; }
 .recipe-meta { display: flex; gap: 14px; flex-wrap: wrap; color: var(--text-dim); font-size: 0.78rem; }
 .recipe-meta b { color: var(--text); }
-.stock-bar { padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; border-bottom: 1px solid var(--border-dim); }
-.stock-bar.ok { background: var(--green-bg); border-left: 2px solid var(--green-border); }
-.stock-bar.missing { background: var(--red-bg); border-left: 2px solid var(--red-border); }
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 100; }
-.modal { background: var(--panel); border: 1px solid var(--border-dim); box-shadow: var(--bevel-hi), var(--bevel-lo), 0 8px 32px rgba(0,0,0,0.8); width: 420px; max-height: 88vh; display: flex; flex-direction: column; }
-.large-modal { width: 620px; }
-.modal-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; }
-.modal-body label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); }
-.input { background: var(--bg-mid); border: 1px solid var(--border-dim); box-shadow: inset 1px 1px 0 rgba(0,0,0,0.3); color: var(--text); font-family: inherit; font-size: 0.88rem; padding: 7px 10px; width: 100%; }
-.textarea { resize: vertical; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.modal-footer { padding: 10px 14px; background: var(--header-mid); border-top: 1px solid var(--border-dim); display: flex; gap: 6px; justify-content: flex-end; flex-shrink: 0; }
-.error { color: var(--red); font-size: 0.82rem; }
-.ing-edit-list { display: flex; flex-direction: column; gap: 5px; }
-.ing-edit-row { display: flex; gap: 5px; align-items: center; }
-.ing-combo { position: relative; }
-.ing-dropdown { position: absolute; top: 100%; left: 0; right: 0; z-index: 200; background: var(--panel); border: 1px solid var(--border-dim); box-shadow: 0 4px 16px rgba(0,0,0,0.6); max-height: 180px; overflow-y: auto; }
-.ing-option { padding: 6px 10px; font-size: 0.85rem; cursor: pointer; color: var(--text); }
-.ing-option:hover { background: var(--panel-alt); }
-.ing-create { color: var(--green); }
-.ing-empty { color: var(--text-faint); cursor: default; }
-.steps-edit-list { display: flex; flex-direction: column; gap: 8px; }
-.step-edit-block { background: #1a1a1a; border: 1px solid var(--border-dim); padding: 8px; }
-.step-edit-row { display: flex; gap: 6px; align-items: center; margin-bottom: 5px; }
-.substep-edit-list { display: flex; flex-direction: column; gap: 4px; }
-.substep-edit-row { display: flex; gap: 4px; align-items: center; }
 
 @media (max-width: 767px) {
-  .detail-layout {
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: 100%;
-    padding: 6px;
-    gap: 6px;
-  }
-  .left-panel {
-    width: 100% !important;
-    flex-shrink: 0;
-    overflow: visible;
-    height: auto;
-  }
+  .detail-layout { flex-direction: column; overflow-y: auto; overflow-x: hidden; height: 100%; padding: 6px; gap: 6px; }
+  .left-panel { width: 100% !important; flex-shrink: 0; overflow: visible; height: auto; }
   .panel-scroll { overflow: visible; flex: none; height: auto; }
   .photo-area { height: 80px; }
-  .right-panel {
-    flex: none;
-    height: auto;
-    overflow: visible;
-    min-height: 200px;
-  }
+  .right-panel { flex: none; height: auto; overflow: visible; min-height: 200px; }
   .right-panel > div { overflow: visible; height: auto; }
-
-  .modal, .large-modal { width: calc(100vw - 16px) !important; max-height: 90vh; }
-  .three-col { grid-template-columns: 1fr !important; }
-  .ing-edit-row { flex-wrap: wrap; }
-  .ing-edit-row select { flex: 1 1 100% !important; }
 }
 </style>
